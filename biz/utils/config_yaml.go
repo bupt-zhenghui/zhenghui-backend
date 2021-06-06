@@ -4,7 +4,11 @@ import (
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
+	"os"
+	"os/exec"
+	"path/filepath"
 	"strconv"
+	"strings"
 )
 
 type Conf struct {
@@ -17,10 +21,19 @@ type Conf struct {
 	} `yaml:"LocalMySQL"`
 }
 
+func GetAppPath() string {
+	file, _ := exec.LookPath(os.Args[0])
+	path, _ := filepath.Abs(file)
+	index := strings.LastIndex(path, string(os.PathSeparator))
+	return path[:index]
+}
+
 func GenerateMySQLDSN() (string, error) {
 	var config Conf
 	var dsn string
-	yamlFile, err := ioutil.ReadFile("./conf/config.yaml")
+	appPath := GetAppPath()
+	println("appPath: ", appPath)
+	yamlFile, err := ioutil.ReadFile(appPath + "/conf/config.yaml")
 	if err != nil {
 		log.Printf("yamlFile.Get err #%v ", err)
 		return dsn, err
