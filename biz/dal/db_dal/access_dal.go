@@ -1,7 +1,6 @@
 package db_dal
 
 import (
-	"fmt"
 	"zhenghui-backend/biz/model/dao"
 	"zhenghui-backend/biz/model/dto"
 )
@@ -22,32 +21,41 @@ func SearchAccessHistory() ([]dto.AccessHistory, error) {
 // 访问记录统计数据
 func SearchAccessStatistics() (dto.AccessStatistics, error) {
 	var response dto.AccessStatistics
-	dbPrefix := dao.DB.Table("access_data")
+	tableName := "access_data"
 	// 1. 查询浏览量总数
-	if err := dbPrefix.Select("count(*) as total_number").Find(&response.TotalNumber).Error; err != nil {
+	if err := dao.DB.Table(tableName).Select("count(*) as total_number").Find(&response.TotalNumber).Error; err != nil {
 		return response, err
 	}
-	fmt.Println(response)
 	// 2. 查询本周浏览量
-	if err := dbPrefix.Select("count(*) as recent_week_number").Where("DATE_FORMAT(create_time, '%Y%m%u') = DATE_FORMAT(now(),'%Y%m%u')").
+	if err := dao.DB.Table(tableName).Select("count(*) as recent_week_number").Where("DATE_FORMAT(create_time, '%Y%m%u') = DATE_FORMAT(now(),'%Y%m%u')").
 		Find(&response.RecentWeekNumber).Error; err != nil {
 		return response, err
 	}
-	fmt.Println(response)
 	// 3. 查询本月浏览量
-	if err := dbPrefix.Select("count(*) as recent_30_day_number").Where("DATE_FORMAT(create_time, '%Y%m') = DATE_FORMAT(NOW(),'%Y%m')").
+	if err := dao.DB.Table(tableName).Select("count(*) as recent_30_day_number").Where("DATE_FORMAT(create_time, '%Y%m') = DATE_FORMAT(NOW(),'%Y%m')").
 		Find(&response.RecentMonthNumber).Error; err != nil {
 		return response, err
 	}
-	fmt.Println(response)
 	// 4. 查询总浏览人数（相同ip只记1次）
-	if err := dbPrefix.Select("count(DISTINCT ip)").Find(&response.TotalIPNumber).Error; err != nil {
+	if err := dao.DB.Table(tableName).Select("count(DISTINCT ip)").Find(&response.TotalIPNumber).Error; err != nil {
 		return response, err
 	}
-	fmt.Println(response)
-	err := dbPrefix.Select("count(DISTINCT ip)").Where("DATE_FORMAT(create_time, '%Y%m') = DATE_FORMAT(NOW(),'%Y%m')").
+	// 5. 查询本月浏览人数
+	err := dao.DB.Table(tableName).Select("count(DISTINCT ip)").Where("DATE_FORMAT(create_time, '%Y%m') = DATE_FORMAT(NOW(),'%Y%m')").
 		Find(&response.RecentMonthIPNumber).Error
 	return response, err
 }
 
-// select substring(create_time, 1, 10), count(0) from access_data group by substring(create_time, 1, 10)
+func SearchAccessNumberPerDay() ([]dto.DailyAccess, error) {
+	var response []dto.DailyAccess
+	err := dao.DB.Raw("select datelist as date, count(0)-1 as number " +
+		"from calendar left join access_data on calendar.datelist = substring(access_data.create_time, 1, 10) " +
+		"where datelist < now() group by datelist").Find(&response).Error
+	return response, err
+}
+
+func SearchPageAccessNumber() ([]dto.PageAccess, error) {
+	var response []dto.PageAccess
+	err := dao.DB.Table("access_data").Select("page, count(0) as number").Group("page").Find(&response).Error
+	return response, err
+}

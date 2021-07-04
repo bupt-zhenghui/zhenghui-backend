@@ -12,7 +12,7 @@ import (
 func InsertAccessData(ip string, accessPage consts.AccessPage) error {
 	accessDataRequest, err := utils.ParseIP(ip)
 	if err != nil {
-		log.Fatal("utils.ParseIP error, err = ", err)
+		log.Println("utils.ParseIP error, err = ", err)
 		return err
 	}
 	accessData := dao.AccessData{
@@ -31,4 +31,19 @@ func SearchAccessHistory() ([]dto.AccessHistory, error) {
 
 func SearchAccessStatistics() (dto.AccessStatistics, error) {
 	return db_dal.SearchAccessStatistics()
+}
+
+func SearchAccessStatisticsMid() (dto.AccessStatisticsMid, error) {
+	var response dto.AccessStatisticsMid
+	var err error
+	response.DailyAccessList, err = db_dal.SearchAccessNumberPerDay()
+	if err != nil {
+		log.Println("SearchAccessNumberPerDay error, err = ", err)
+		return response, err
+	}
+	response.PageAccessList, err = db_dal.SearchPageAccessNumber()
+	if err != nil {
+		log.Println("SearchPageAccessNumber error, err = ", err)
+	}
+	return response, err
 }

@@ -3,7 +3,9 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 	"strconv"
+	"time"
 	"zhenghui-backend/biz/consts"
+	"zhenghui-backend/biz/model/dao"
 	"zhenghui-backend/biz/service"
 )
 
@@ -35,4 +37,28 @@ func SearchAccessHandler(c *gin.Context) {
 func SearchAccessStatisticsHandler(c *gin.Context) {
 	response, err := service.SearchAccessStatistics()
 	GenerateResponse(c, response, err)
+}
+
+func SearchAccessStatisticsMidHandler(c *gin.Context) {
+	response, err := service.SearchAccessStatisticsMid()
+	GenerateResponse(c, response, err)
+}
+
+type Calendar struct {
+	Date string `gorm:"column:datelist" json:"datelist"`
+}
+
+func Synchronize(c *gin.Context) {
+	stamp := time.Now().AddDate(0, 0, -2)
+	for i := 0; i < 2000; i++ {
+		cur := stamp.Format(consts.FormatDate)
+		date := Calendar{
+			Date: cur,
+		}
+		if err := dao.DB.Create(date).Error; err != nil {
+			GenerateEmptyDataResponse(c, err)
+		}
+		stamp = stamp.AddDate(0, 0, 1)
+	}
+	GenerateEmptyDataResponse(c, nil)
 }

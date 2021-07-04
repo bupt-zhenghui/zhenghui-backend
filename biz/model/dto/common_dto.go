@@ -23,3 +23,18 @@ type AccessStatistics struct {
 	TotalIPNumber       int64 `gorm:"total_ip_number" json:"total_ip_number"`
 	RecentMonthIPNumber int64 `gorm:"recent_month_ip_number" json:"recent_month_ip_number"`
 }
+
+type AccessStatisticsMid struct {
+	DailyAccessList []DailyAccess `json:"daily_access_list"`
+	PageAccessList  []PageAccess  `json:"page_access_list"`
+}
+
+type DailyAccess struct {
+	Date   string `json:"date"`
+	Number int64  `json:"number"`
+}
+
+type PageAccess struct {
+	Page   string `json:"page"`
+	Number int64  `json:"number"`
+}
