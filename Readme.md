@@ -2,6 +2,8 @@
 
 [toc]
 
+
+
 ## 项目基本环境
 
 ```bash
@@ -278,7 +280,7 @@ if err != nil {
 当此处抛出异常时，我们会在日志中看到如下的记录，这让我们拥有迅速定位问题的能力：
 
 ```bash
-2021/06/06 18:32:51 /Users/bytedance/go/src/zhenghui-backend/biz/dal/db_dal/user_info_dal.go:9 record not found
+2021/06/06 18:32:51 /Users/bytedance/go/src/bootstrap/biz/dal/db_dal/user_info_dal.go:9 record not found
 [13.064ms] [rows:0] SELECT * FROM `user_info` WHERE id = 2 ORDER BY `user_info`.`id` LIMIT 1
 2021/06/06 18:32:51 db_dal.SearchUserInfo failed to execute, error:  record not found
 ```
