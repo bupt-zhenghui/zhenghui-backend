@@ -32,7 +32,6 @@ func GenerateMySQLDSN() (string, error) {
 	var config Conf
 	var dsn string
 	appPath := GetAppPath()
-	println("appPath: ", appPath)
 	yamlFile, err := ioutil.ReadFile(appPath + "/conf/config.yaml")
 	if err != nil {
 		log.Printf("yamlFile.Get err #%v ", err)

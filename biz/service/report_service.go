@@ -22,7 +22,7 @@ func SearchMonthlyReport() ([]dto.MonthlyReportResponse, error) {
 			Id:         idx,
 			Title:      fileName,
 			Tags:       strings.Split(tags, ","),
-			CreateTime: utils.GetFileModTime(file),
+			UpdateTime: utils.GetFileModTime(file),
 			URL:        fileFull,
 		}
 		response = append(response, report)

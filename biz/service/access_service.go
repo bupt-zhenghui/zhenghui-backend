@@ -36,11 +36,18 @@ func SearchAccessStatistics() (dto.AccessStatistics, error) {
 func SearchAccessStatisticsMid() (dto.AccessStatisticsMid, error) {
 	var response dto.AccessStatisticsMid
 	var err error
-	response.DailyAccessList, err = db_dal.SearchAccessNumberPerDay()
+
+	dailyAccessList, err := db_dal.SearchAccessNumberPerDay()
 	if err != nil {
 		log.Println("SearchAccessNumberPerDay error, err = ", err)
 		return response, err
 	}
+	var count int64
+	for i := 0; i < len(dailyAccessList); i++ {
+		dailyAccessList[i].Number += count
+		count = dailyAccessList[i].Number
+	}
+	response.DailyAccessList = dailyAccessList
 	response.PageAccessList, err = db_dal.SearchPageAccessNumber()
 	if err != nil {
 		log.Println("SearchPageAccessNumber error, err = ", err)

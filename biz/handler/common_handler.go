@@ -3,9 +3,7 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 	"strconv"
-	"time"
 	"zhenghui-backend/biz/consts"
-	"zhenghui-backend/biz/model/dao"
 	"zhenghui-backend/biz/service"
 )
 
@@ -44,21 +42,15 @@ func SearchAccessStatisticsMidHandler(c *gin.Context) {
 	GenerateResponse(c, response, err)
 }
 
-type Calendar struct {
-	Date string `gorm:"column:datelist" json:"datelist"`
-}
-
-func Synchronize(c *gin.Context) {
-	stamp := time.Now().AddDate(0, 0, -2)
-	for i := 0; i < 2000; i++ {
-		cur := stamp.Format(consts.FormatDate)
-		date := Calendar{
-			Date: cur,
-		}
-		if err := dao.DB.Create(date).Error; err != nil {
-			GenerateEmptyDataResponse(c, err)
-		}
-		stamp = stamp.AddDate(0, 0, 1)
+func UploadFileHandler(c *gin.Context) {
+	fileType, err := strconv.ParseInt(c.Param("type"), 10, 64)
+	if err != nil {
+		GenerateEmptyDataResponse(c, err)
 	}
-	GenerateEmptyDataResponse(c, nil)
+	header, err := c.FormFile("file")
+	if err != nil {
+		GenerateEmptyDataResponse(c, err)
+	}
+	err = service.UploadFile(c, header, consts.FileType(fileType))
+	GenerateEmptyDataResponse(c, err)
 }
