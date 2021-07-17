@@ -5,7 +5,7 @@ import (
 	"zhenghui-backend/biz/consts"
 )
 
-type ProjectResponse struct {
+type ProjectDTO struct {
 	Id         int64              `gorm:"column:id" json:"id"`
 	Type       consts.ProjectType `gorm:"column:type" json:"type"`
 	Name       string             `gorm:"column:name" json:"name"`

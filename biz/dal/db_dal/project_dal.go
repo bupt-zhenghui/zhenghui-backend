@@ -1,6 +1,8 @@
 package db_dal
 
-import "zhenghui-backend/biz/model/dao"
+import (
+	"zhenghui-backend/biz/model/dao"
+)
 
 func SearchProjectList() ([]dao.Project, error) {
 	var response []dao.Project
@@ -13,5 +15,10 @@ func InsertProject(project dao.Project) error {
 }
 
 func UpdateProject(project dao.Project) error {
-	return dao.DB.Updates(&project).Where("id = ?", project.Id).Error
+	return dao.DB.Table("project").Where("id = ?", project.Id).Update("name", project.Name).Update("tag", project.Tag).
+		Update("md_url", project.MdURL).Update("github_url", project.GithubURL).Update("project_url", project.ProjectURL).Error
+}
+
+func DeleteProject(id int64) error {
+	return dao.DB.Delete(&dao.Project{}, id).Error
 }

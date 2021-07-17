@@ -26,6 +26,7 @@ func customizeRegister(r *gin.Engine) {
 		rProject.GET("/search", handler.SearchProjectHandler)
 		rProject.POST("/create", handler.InsertProjectHandler)
 		rProject.POST("/update", handler.UpdateProjectHandler)
+		rProject.GET("/delete/:id", handler.DeleteProjectHandler)
 	}
 	// Only for test
 	r.GET("/test", handler.Test)
