@@ -3,6 +3,7 @@ package consts
 const (
 	FormatTime      = "2006-01-02 15:04:05"
 	FormatDate      = "2006-01-02"
+	ShortDate       = "20060102"
 	IP2LocationSite = "https://whois.pconline.com.cn/ipJson.jsp?json=true&ip="
 	ReportPath      = "./file/monthly_report/"
 	ProjectPath     = "./file/project/"

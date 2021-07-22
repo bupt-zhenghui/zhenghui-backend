@@ -6,11 +6,10 @@ import (
 	"zhenghui-backend/biz/dal/db_dal"
 	"zhenghui-backend/biz/model/dao"
 	"zhenghui-backend/biz/model/dto"
-	"zhenghui-backend/biz/utils"
 )
 
 func InsertAccessData(ip string, accessPage consts.AccessPage) error {
-	accessDataRequest, err := utils.ParseIP(ip)
+	accessDataRequest, err := dto.ParseIP(ip)
 	if err != nil {
 		log.Println("utils.ParseIP error, err = ", err)
 		return err

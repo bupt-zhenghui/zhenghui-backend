@@ -10,9 +10,14 @@ func customizeRegister(r *gin.Engine) {
 	root := r.Group("/api/v1")
 	{
 		root.GET("/get-user-info", handler.SearchUserInfoHandler)
-		root.GET("/get-leetcode", handler.SearchLeetcodeHandler)
 		root.GET("/get-report", handler.SearchReportHandler)
 		root.POST("/upload/:type", handler.UploadFileHandler)
+	}
+	rLeetcode := root.Group("/leetcode")
+	{
+		rLeetcode.GET("/list", handler.SearchLeetcodeHandler)
+		rLeetcode.GET("/statistics", handler.SearchLeetcodeStatisticsHandler)
+		rLeetcode.GET("/update-statistics", handler.UpdateLeetcodeStatisticsHandler)
 	}
 	rAccess := root.Group("/access")
 	{

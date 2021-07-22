@@ -1,6 +1,13 @@
 package dto
 
-import "time"
+import (
+	"encoding/json"
+	"github.com/axgle/mahonia"
+	"io/ioutil"
+	"net/http"
+	"time"
+	"zhenghui-backend/biz/consts"
+)
 
 type Location struct {
 	IP       string `json:"ip"`
@@ -37,4 +44,17 @@ type DailyAccess struct {
 type PageAccess struct {
 	Page   string `json:"page"`
 	Number int64  `json:"number"`
+}
+
+// fetch client location and ISP based on client ip address
+func ParseIP(ip string) (Location, error) {
+	var response Location
+	resp, err := http.Get(consts.IP2LocationSite + ip)
+	if err != nil {
+		return response, err
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	bodyStr := mahonia.NewDecoder("gbk").ConvertString(string(body))
+	err = json.Unmarshal([]byte(string(bodyStr)), &response) // 将string 格式转成json格式
+	return response, err
 }
