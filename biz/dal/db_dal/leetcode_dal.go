@@ -1,8 +1,6 @@
 package db_dal
 
 import (
-	"time"
-	"zhenghui-backend/biz/consts"
 	"zhenghui-backend/biz/model/dao"
 	"zhenghui-backend/biz/model/dto"
 )
@@ -27,8 +25,8 @@ func QueryLeetcodeCount(condition string) (int64, error) {
 
 func CalculateNewAcNumber(curNum int64) (int64, error) {
 	var lastNumber int64
-	lastDate := time.Now().AddDate(0, 0, -1).Format(consts.ShortDate)
-	err := dao.DB.Table("leetcode_statistics").Select("ac_number").Where("date = ?", lastDate).Find(&lastNumber).Limit(1).Error
+	//lastDate := time.Now().AddDate(0, 0, -1).Format(consts.ShortDate)
+	err := dao.DB.Table("leetcode_statistics").Select("ac_number").Order("date desc").Find(&lastNumber).Limit(1).Error
 	return curNum - lastNumber, err
 }
 
@@ -51,8 +49,11 @@ func CheckNewDate(date string) (bool, error) {
 }
 
 func SearchAcNumberPerDay() ([]dto.AcDataDTO, error) {
-	var resposne []dto.AcDataDTO
+	var response []dto.AcDataDTO
 	err := dao.DB.Table("leetcode_statistics").Where("create_time >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)").
-		Select("date, new_ac_number").Find(&resposne).Error
-	return resposne, err
+		Select("date, new_ac_number").Find(&response).Error
+	for idx, item := range response {
+		response[idx].Date = item.Date[4:6] + "-" + item.Date[6:]
+	}
+	return response, err
 }
